@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>唯庸 | AI Agent 布道者</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome 图标 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        secondary: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            200: '#ddd6fe',
+                            300: '#c4b5fd',
+                            400: '#a78bfa',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                            800: '#5b21b6',
+                            900: '#4c1d95',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        poppins: ['Poppins', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        /* 自定义样式 */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(90deg, #0ea5e9, #8b5cf6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .hero-gradient {
+            background: linear-gradient(to right, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.7));
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .btn-hover {
+            transition: all 0.2s ease;
+        }
+        
+        .btn-hover:hover {
+            transform: scale(1.05);
+        }
+        
+        .bg-blur {
+            backdrop-filter: blur(8px);
+        }
+        
+        .project-card {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .project-card .content {
+            flex: 1;
+        }
+        
+        .stats-item {
+            position: relative;
+        }
+        
+        .stats-item::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: linear-gradient(90deg, #0ea5e9, #8b5cf6);
+            border-radius: 3px;
+        }
+        
+        .social-icon {
+            transition: all 0.3s ease;
+        }
+        
+        .social-icon:hover {
+            transform: translateY(-3px);
+        }
+        
+        .timeline-item {
+            position: relative;
+            padding-left: 30px;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: linear-gradient(90deg, #0ea5e9, #8b5cf6);
+        }
+        
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 12px;
+            width: 2px;
+            height: calc(100% - 12px);
+            background: #e2e8f0;
+        }
+        
+        .timeline-item:last-child::after {
+            display: none;
+        }
+        
+        /* 自定义滚动条 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+        
+        /* 波浪动画 */
+        .wave {
+            animation: wave 3s linear infinite;
+        }
+        
+        @keyframes wave {
+            0% { transform: translateX(0); }
+            50% { transform: translateX(-25%); }
+            100% { transform: translateX(-50%); }
+        }
+        
+        /* 渐变背景 */
+        .gradient-bg {
+            background: linear-gradient(135deg, #0ea5e9 0%, #8b5cf6 100%);
+        }
+        
+        /* 数据可视化卡片 */
+        .data-card {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .data-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                0deg,
+                transparent,
+                rgba(255, 255, 255, 0.1),
+                transparent
+            );
+            transform: rotate(45deg);
+            animation: shine 3s linear infinite;
+        }
+        
+        @keyframes shine {
+            0% { transform: rotate(45deg) translateX(-100%); }
+            100% { transform: rotate(45deg) translateX(100%); }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+    <!-- 导航栏 -->
+    <nav class="bg-white/80 backdrop-blur-md shadow-md fixed w-full z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="#" class="flex items-center">
+                        <span class="font-bold text-xl font-poppins">唯<span class="gradient-text">庸</span></span>
+                    </a>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-6">
+                    <a href="#about" class="text-slate-700 hover:text-primary-600 transition-colors px-3 py-2 rounded-md text-sm font-medium">关于我</a>
+                    <a href="#projects" class="text-slate-700 hover:text-primary-600 transition-colors px-3 py-2 rounded-md text-sm font-medium">作品展示</a>
+                    <a href="#experience" class="text-slate-700 hover:text-primary-600 transition-colors px-3 py-2 rounded-md text-sm font-medium">经验</a>
+                    <a href="#contact" class="text-slate-700 hover:text-primary-600 transition-colors px-3 py-2 rounded-md text-sm font-medium">联系方式</a>
+                </div>
+                
+                <div class="flex items-center">
+                    <a href="#contact" class="bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 text-white px-4 py-2 rounded-md text-sm font-medium btn-hover hidden md:block">
+                        <i class="fas fa-envelope mr-1"></i> 联系我
+                    </a>
+                    
+                    <!-- 移动端菜单按钮 -->
+                    <div class="md:hidden">
+                        <button id="mobile-menu-button" class="text-slate-700 hover:text-primary-600">
+                            <i class="fas fa-bars text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 移动端菜单 -->
+        <div id="mobile-menu" class="md:hidden hidden bg-white/95 backdrop-blur-md shadow-lg absolute w-full">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="#about" class="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-primary-50 hover:text-primary-600">关于我</a>
+                <a href="#projects" class="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-primary-50 hover:text-primary-600">作品展示</a>
+                <a href="#experience" class="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-primary-50 hover:text-primary-600">经验</a>
+                <a href="#contact" class="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-primary-50 hover:text-primary-600">联系方式</a>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- 英雄区域 -->
+    <header class="relative pt-16 overflow-hidden">
+        <div class="absolute inset-0">
+            <img src="https://picsum.photos/1920/1080?random=1" alt="背景" class="w-full h-full object-cover">
+            <div class="absolute inset-0 hero-gradient"></div>
+        </div>
+        
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32">
+            <div class="md:flex items-center">
+                <div class="md:w-1/2 mb-10 md:mb-0">
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 font-poppins">
+                        唯庸 <span class="text-primary-400">|</span> <span class="gradient-text">AI Agent 布道者</span>
+                    </h1>
+                    <p class="text-xl text-slate-200 max-w-3xl mb-10">
+                        数字游民 · 开源社区主理人 · 效率革命推动者
+                    </p>
+                    
+                    <div class="flex flex-wrap gap-4">
+                        <a href="#projects" class="bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 text-white px-6 py-3 rounded-lg shadow-lg font-medium btn-hover inline-flex items-center">
+                            <i class="fas fa-rocket mr-2"></i> 查看我的作品
+                        </a>
+                        <a href="#contact" class="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white px-6 py-3 rounded-lg shadow-lg font-medium btn-hover inline-flex items-center">
+                            <i class="fas fa-envelope mr-2"></i> 联系我
+                        </a>
+                    </div>
+                    
+                    <!-- 社交媒体图标 -->
+                    <div class="flex space-x-4 mt-8">
+                        <a href="https://okjk.co/GzVOHr" target="_blank" class="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white p-3 rounded-full social-icon">
+                            <i class="fas fa-comment-dots"></i>
+                        </a>
+                        <a href="https://space.bilibili.com/3546742760934321" target="_blank" class="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white p-3 rounded-full social-icon">
+                            <i class="fab fa-bilibili"></i>
+                        </a>
+                        <a href="#" target="_blank" class="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white p-3 rounded-full social-icon">
+                            <i class="fab fa-weixin"></i>
+                        </a>
+                        <a href="#" target="_blank" class="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white p-3 rounded-full social-icon">
+                            <i class="fas fa-video"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="md:w-1/2 flex justify-center">
+                    <div class="relative">
+                        <div class="w-64 h-64 md:w-80 md:h-80 rounded-full overflow-hidden border-4 border-white/30 shadow-xl">
+                            <img src="https://picsum.photos/800/800?random=2" alt="唯庸" class="w-full h-full object-cover">
+                        </div>
+                        
+                        <!-- 数据卡片 -->
+                        <div class="absolute -top-4 -right-4 bg-white/90 backdrop-blur-md rounded-lg shadow-lg p-3 data-card">
+                            <div class="text-sm font-medium text-slate-800">AI学员</div>
+                            <div class="text-2xl font-bold gradient-text">3000+</div>
+                        </div>
+                        
+                        <div class="absolute -bottom-4 -left-4 bg-white/90 backdrop-blur-md rounded-lg shadow-lg p-3 data-card">
+                            <div class="text-sm font-medium text-slate-800">企业咨询</div>
+                            <div class="text-2xl font-bold gradient-text">20+</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 波浪分隔符 -->
+        <div class="absolute bottom-0 left-0 right-0">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 120" class="w-full h-auto">
+                <path fill="#f8fafc" fill-opacity="1" d="M0,64L80,69.3C160,75,320,85,480,80C640,75,800,53,960,48C1120,43,1280,53,1360,58.7L1440,64L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z"></path>
+            </svg>
+        </div>
+    </header>
+    
+    <!-- 主要内容区域 -->
+    <main>
+        <!-- 关于我 -->
+        <section id="about" class="py-20 bg-slate-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4 font-poppins">关于<span class="gradient-text">我</span></h2>
+                    <div class="w-20 h-1 bg-gradient-to-r from-primary-500 to-secondary-500 mx-auto"></div>
+                </div>
+                
+                <div class="md:flex items-center">
+                    <div class="md:w-1/2 mb-10 md:mb-0">
+                        <div class="relative">
+                            <img src="https://picsum.photos/800/600?random=3" alt="关于我" class="rounded-xl shadow-xl w-full">
+                            <div class="absolute -bottom-6 -right-6 bg-white rounded-xl shadow-xl p-4 max-w-xs">
+                                <div class="flex items-center mb-2">
+                                    <div class="w-10 h-10 rounded-full bg-gradient-to-r from-primary-500 to-secondary-500 flex items-center justify-center text-white">
+                                        <i class="fas fa-quote-left"></i>
+                                    </div>
+                                    <div class="ml-3">
+                                        <div class="font-medium">我的使命</div>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-slate-600">用AI解放10000人的生产力，推动效率革命</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="md:w-1/2 md:pl-12">
+                        <h3 class="text-2xl font-bold mb-6 font-poppins">唯庸 | <span class="gradient-text">AI Agent 布道者</span></h3>
+                        <p class="text-slate-600 mb-6">
+                            作为AI智能体培训讲师和Agent 101开源社区主理人，我致力于推动AI技术在各行各业的应用和普及。
+                            凭借在字节跳动的AI产品经理经验，我参与了豆包/剪映/扣子底层模型能力的数据支持工作，积累了丰富的AI产品开发经验。
+                        </p>
+                        <p class="text-slate-600 mb-6">
+                            目前，我已帮助20+团队完成智能体工作流部署，培训了3000+认证学员，并发起了"万人智能体计划"，
+                            旨在用AI解放10000人的生产力。我坚信，通过AI技术，我们可以不写一行代码，实现产品商业化，
+                            推动效率革命。
+                        </p>
+                        
+                        <!-- 统计数据 -->
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-6 mt-10">
+                            <div class="stats-item">
+                                <div class="text-3xl font-bold gradient-text">3000+</div>
+                                <div class="text-slate-500">认证学员</div>
+                            </div>
+                            <div class="stats-item">
+                                <div class="text-3xl font-bold gradient-text">20+</div>
+                                <div class="text-slate-500">企业咨询</div>
+                            </div>
+                            <div class="stats-item">
+                                <div class="text-3xl font-bold gradient-text">10000</div>
+                                <div class="text-slate-500">目标受益人数</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 我的专长 -->
+        <section class="py-20 bg-slate-100">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4 font-poppins">我的<span class="gradient-text">专长</span></h2>
+                    <div class="w-20 h-1 bg-gradient-to-r from-primary-500 to-secondary-500 mx-auto"></div>
+                    <p class="text-slate-600 mt-6 max-w-3xl mx-auto">
+                        凭借多年的AI产品经验和培训经验，我专注于以下领域，帮助个人和企业实现AI转型
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- 专长卡片 1 -->
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover">
+                        <div class="p-6">
+                            <div class="w-14 h-14 rounded-full bg-primary-100 flex items-center justify-center text-primary-600 mb-6">
+                                <i class="fas fa-robot text-2xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold mb-3 font-poppins">AI Agent 开发</h3>
+                            <p class="text-slate-600">
+                                专注于AI智能体的设计、开发和部署，帮助企业构建自动化工作流，提升效率和创新能力。
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- 专长卡片 2 -->
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover">
+                        <div class="p-6">
+                            <div class="w-14 h-14 rounded-full bg-secondary-100 flex items-center justify-center text-secondary-600 mb-6">
+                                <i class="fas fa-chalkboard-teacher text-2xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold mb-3 font-poppins">AI培训与教育</h3>
+                            <p class="text-slate-600">
+                                设计并提供高质量的AI培训课程，帮助个人和团队掌握AI技术，从小白成长为专家。
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- 专长卡片 3 -->
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover">
+                        <div class="p-6">
+                            <div class="w-14 h-14 rounded-full bg-green-100 flex items-center justify-center text-green-600 mb-6">
+                                <i class="fas fa-lightbulb text-2xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold mb-3 font-poppins">企业AI转型咨询</h3>
+                            <p class="text-slate-600">
+                                为企业提供AI转型战略规划和实施方案，帮助企业识别AI机会，优化业务流程，提升竞争力。
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 技能条 -->
+                <div class="mt-16 bg-white rounded-xl shadow-md p-8">
+                    <h3 class="text-xl font-bold mb-6 font-poppins">技能熟练度</h3>
+                    
+                    <div class="space-y-6">
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="font-medium">AI产品设计</span>
+                                <span>95%</span>
+                            </div>
+                            <div class="w-full bg-slate-200 rounded-full h-2">
+                                <div class="bg-gradient-to-r from-primary-500 to-secondary-500 h-2 rounded-full" style="width: 95%"></div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="font-medium">AI Agent开发</span>
+                                <span>90%</span>
+                            </div>
+                            <div class="w-full bg-slate-200 rounded-full h-2">
+                                <div class="bg-gradient-to-r from-primary-500 to-secondary-500 h-2 rounded-full" style="width: 90%"></div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="font-medium">AI培训与教学</span>
+                                <span>98%</span>
+                            </div>
+                            <div class="w-full bg-slate-200 rounded-full h-2">
+                                <div class="bg-gradient-to-r from-primary-500 to-secondary-500 h-2 rounded-full" style="width: 98%"></div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="font-medium">企业AI转型咨询</span>
+                                <span>85%</span>
+                            </div>
+                            <div class="w-full bg-slate-200 rounded-full h-2">
+                                <div class="bg-gradient-to-r from-primary-500 to-secondary-500 h-2 rounded-full" style="width: 85%"></div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="font-medium">无代码AI应用开发</span>
+                                <span>92%</span>
+                            </div>
+                            <div class="w-full bg-slate-200 rounded-full h-2">
+                                <div class="bg-gradient-to-r from-primary-500 to-secondary-500 h-2 rounded-full" style="width: 92%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 作品展示 -->
+        <section id="projects" class="py-20 bg-slate-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4 font-poppins">作品<span class="gradient-text">展示</span></h2>
+                    <div class="w-20 h-1 bg-gradient-to-r from-primary-500 to-secondary-500 mx-auto"></div>
+                    <p class="text-slate-600 mt-6 max-w-3xl mx-auto">
+                        我开发的AI产品和教育资源，旨在帮助更多人享受AI带来的效率提升
+                    </p>
+                </div>
+                
+                <!-- 项目筛选 -->
+                <div class="flex justify-center mb-10 overflow-x-auto pb-4">
+                    <div class="flex space-x-2">
+                        <button class="px-4 py-2 bg-gradient-to-r from-primary-600 to-secondary-600 text-white rounded-full text-sm font-medium">
+                            全部作品
+                        </button>
+                        <button class="px-4 py-2 bg-white text-slate-700 hover:bg-slate-100 rounded-full text-sm font-medium">
+                            AI工具
+                        </button>
+                        <button class="px-4 py-2 bg-white text-slate-700 hover:bg-slate-100 rounded-full text-sm font-medium">
+                            教育资源
+                        </button>
+                        <button class="px-4 py-2 bg-white text-slate-700 hover:bg-slate-100 rounded-full text-sm font-medium">
+                            开源项目
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- 项目卡片 1 -->
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover project-card">
+                        <div class="relative h-48">
+                            <img src="https://picsum.photos/800/600?random=4" alt="春节红包封面生成工具" class="w-full h-full object-cover">
+                            <div class="absolute top-4 left-4 bg-primary-600 text-white px-3 py-1 rounded-full text-xs font-medium">
+                                AI工具
+                            </div>
+                        </div>
+                        <div class="p-6 content">
+                            <h3 class="text-xl font-bold mb-2 font-poppins">春节红包封面生成工具</h3>
+                            <p class="text-slate-600 text-sm mb-4">
+                                基于AI图像生成技术，帮助用户快速创建个性化的春节红包封面，支持多种风格和主题。
+                            </p>
+                            <div class="flex items-center text-sm text-slate-500 mb-4">
+                                <i class="fas fa-calendar-alt mr-1"></i> 2023年
+                                <span class="mx-2">•</span>
+                                <i class="fas fa-user-friends mr-1"></i> 10000+ 用户
+                            </div>
+                        </div>
+                        <div class="px-6 pb-6">
+                            <a href="https://hongbao.agent101.cn/" target="_blank" class="bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 text-white px-4 py-2 rounded-lg text-sm font-medium inline-flex items-center btn-hover">
+                                <i class="fas fa-external-link-alt mr-1"></i> 访问项目
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- 项目卡片 2 -->
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover project-card">
+                        <div class="relative h-48">
+                            <img src="https://picsum.photos/800/600?random=5" alt="决明子-AI辅助决策工具" class="w-full h-full object-cover">
+                            <div class="absolute top-4 left-4 bg-secondary-600 text-white px-3 py-1 rounded-full text-xs font-medium">
+                                AI工具
+                            </div>
+                        </div>
+                        <div class="p-6 content">
+                            <h3 class="text-xl font-bold mb-2 font-poppins">决明子-AI辅助决策工具</h3>
+                            <p class="text-slate-600 text-sm mb-4">
+                                利用AI分析技术，帮助用户在复杂决策场景中进行多维度分析，提供客观建议和决策支持。
+                            </p>
+                            <div class="flex items-center text-sm text-slate-500 mb-4">
+                                <i class="fas fa-calendar-alt mr-1"></i> 2023年
+                                <span class="mx-2">•</span>
+                                <i class="fas fa-user-friends mr-1"></i> 5000+ 用户
+                            </div>
+                        </div>
+                        <div class="px-6 pb-6">
+                            <a href="https://jueming.agent101.cn/" target="_blank" class="bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 text-white px-4 py-2 rounded-lg text-sm font-medium inline-flex items-center btn-hover">
+                                <i class="fas fa-external-link-alt mr-1"></i> 访问项目
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- 项目卡片 3 -->
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover project-card">
+                        <div class="relative h-48">
+                            <img src="https://picsum.photos/800/600?random=6" alt="Agent 101 智能体指北" class="w-full h-full object-cover">
+                            <div class="absolute top-4 left-4 bg-green-600 text-white px-3 py-1 rounded-full text-xs font-medium">
+                                教育资源
+                            </div>
+                        </div>
+                        <div class="p-6 content">
+                            <h3 class="text-xl font-bold mb-2 font-poppins">Agent 101 智能体指北</h3>
+                            <p class="text-slate-600 text-sm mb-4">
+                                系统性的AI智能体开发指南，涵盖从入门到高级应用的全面知识，帮助开发者快速掌握智能体开发技能。
+                            </p>
+                            <div class="flex items-center text-sm text-slate-500 mb-4">
+                                <i class="fas fa-calendar-alt mr-1"></i> 2022年
+                                <span class="mx-2">•</span>
+                                <i class="fas fa-user-friends mr-1"></i> 8000+ 阅读
+                            </div>
+                        </div>
+                        <div class="px-6 pb-6">
+                            <a href="https://agent101.feishu.cn/wiki/KLarwIA1piLrBYk7bf2cBf3HnNe" target="_blank" class="bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 text-white px-4 py-2 rounded-lg text-sm font-medium inline-flex items-center btn-hover">
+                                <i class="fas fa-external-link-alt mr-1"></i> 访问项目
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- 项目卡片 4 -->
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover project-card">
+                        <div class="relative h-48">
+                            <img src="https://picsum.photos/800/600?random=7" alt="唯庸的AI公开课" class="w-full h-full object-cover">
+                            <div class="absolute top-4 left-4 bg-yellow-600 text-white px-3 py-1 rounded-full text-xs font-medium">
+                                教育资源
+                            </div>
+                        </div>
+                        <div class="p-6 content">
+                            <h3 class="text-xl font-bold mb-2 font-poppins">唯庸的AI公开课</h3>
+                            <p class="text-slate-600 text-sm mb-4">
+                                面向各行业人士的AI应用系列课程，从零基础到实际应用，帮助学员快速掌握AI工具和技能。
+                            </p>
+                            <div class="flex items-center text-sm text-slate-500 mb-4">
+                                <i class="fas fa-calendar-alt mr-1"></i> 2023年
+                                <span class="mx-2">•</span>
+                                <i class="fas fa-user-friends mr-1"></i> 3000+ 学员
+                            </div>
+                        </div>
+                        <div class="px-6 pb-6">
+                            <a href="https://agent101.cn/" target="_blank" class="bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 text-white px-4 py-2 rounded-lg text-sm font-medium inline-flex items-center btn-hover">
+                                <i class="fas fa-external-link-alt mr-1"></i> 访问项目
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- 项目卡片 5 -->
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover project-card">
+                        <div class="relative h-48">
+                            <img src="https://picsum.photos/800/600?random=8" alt="AI应用从小白到专家" class="w-full h-full object-cover">
+                            <div class="absolute top-4 left-4 bg-purple-600 text-white px-3 py-1 rounded-full text-xs font-medium">
+                                出版物
+                            </div>
+                        </div>
+                        <div class="p-6 content">
+                            <h3 class="text-xl font-bold mb-2 font-poppins">《AI应用从小白到专家》</h3>
+                            <p class="text-slate-600 text-sm mb-4">
+                                系统讲解AI应用开发和使用的专业书籍，涵盖理论基础、实践案例和未来趋势，适合各层次读者。
+                            </p>
+                            <div class="flex items-center text-sm text-slate-500 mb-4">
+                                <i class="fas fa-calendar-alt mr-1"></i> 2023年
+                                <span class="mx-2">•</span>
+                                <i class="fas fa-book-reader mr-1"></i> 出版中
+                            </div>
+                        </div>
+                        <div class="px-6 pb-6">
+                            <button class="bg-slate-200 text-slate-700 px-4 py-2 rounded-lg text-sm font-medium inline-flex items-center">
+                                <i class="fas fa-hourglass-half mr-1"></i> 即将发布
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- 项目卡片 6 -->
+                    <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover project-card">
+                        <div class="relative h-48">
+                            <img src="https://picsum.photos/800/600?random=9" alt="Agent 101开源社区" class="w-full h-full object-cover">
+                            <div class="absolute top-4 left-4 bg-red-600 text-white px-3 py-1 rounded-full text-xs font-medium">
+                                开源项目
+                            </div>
+                        </div>
+                        <div class="p-6 content">
+                            <h3 class="text-xl font-bold mb-2 font-poppins">Agent 101开源社区</h3>
+                            <p class="text-slate-600 text-sm mb-4">
+                                致力于推动AI智能体技术发展的开源社区，提供技术分享、资源交流和项目协作平台。
+                            </p>
+                            <div class="flex items-center text-sm text-slate-500 mb-4">
+                                <i class="fas fa-calendar-alt mr-1"></i> 2022年
+                                <span class="mx-2">•</span>
+                                <i class="fas fa-code-branch mr-1"></i> 500+ 贡献者
+                            </div>
+                        </div>
+                        <div class="px-6 pb-6">
+                            <a href="#" class="bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 text-white px-4 py-2 rounded-lg text-sm font-medium inline-flex items-center btn-hover">
+                                <i class="fab fa-github mr-1"></i> GitHub
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 查看更多按钮 -->
+                <div class="text-center mt-12">
+                    <button class="bg-white border-2 border-primary-600 text-primary-600 hover:bg-primary-50 px-6 py-3 rounded-lg shadow-md font-medium btn-hover inline-flex items-center">
+                        <i class="fas fa-plus mr-2"></i> 查看更多项目
+                    </button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- 经验 -->
+        <section id="experience" class="py-20 bg-slate-100">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4 font-poppins">工作<span class="gradient-text">经验</span></h2>
+                    <div class="w-20 h-1 bg-gradient-to-r from-primary-500 to-secondary-500 mx-auto"></div>
+                    <p class="text-slate-600 mt-6 max-w-3xl mx-auto">
+                        我的职业生涯和专业背景，积累了丰富的AI产品开发和教育经验
+                    </p>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-md p-8">
+                    <div class="space-y-10">
+                        <!-- 经验项目 1 -->
+                        <div class="timeline-item pb-10">
+                            <div class="flex flex-col md:flex-row md:items-center justify-between mb-4">
+                                <h3 class="text-xl font-bold font-poppins">AI智能体培训讲师</h3>
+                                <div class="flex items-center mt-2 md:mt-0">
+                                    <span class="bg-primary-100 text-primary-800 px-3 py-1 rounded-full text-sm font-medium">
+                                        现在
+                                    </span>
+                                    <span class="mx-2 text-slate-400">•</span>
+                                    <span class="text-slate-500">2022年 - 至今</span>
+                                </div>
+                            </div>
+                            <p class="text-slate-600 mb-4">
+                                作为独立AI培训讲师，我设计并提供了一系列AI智能体开发和应用的培训课程，
+                                已培训3000+学员，帮助他们掌握AI技术并应用到实际工作中。
+                            </p>
+                            <div class="flex flex-wrap gap-2 mt-4">
+                                <span class="bg-slate-100 text-slate-700 px-3 py-1 rounded-full text-sm">课程设计</span>
+                                <span class="bg-slate-100 text-slate-700 px-3 py-1 rounded-full text-sm">技术培训</span>
+                                <span class="bg-slate-100 text-slate-700 px-3 py-1 rounded-full text-sm">AI应用开发</span>
+                                <span class="bg-slate-100 text-slate-700 px-3 py-1 rounded-full text-sm">智能体工作流</span>
+                            </div>
+                        </div>
+                        
+                        <!-- 经验项目 2 -->
+                        <div class="timeline-item pb-10">
+                            <div class="flex flex-col md:flex-row md:items-center justify-between mb-4">
+                                <h3 class="text-xl font-bold font-poppins">字节跳动 - AI产品经理</h3>
+                                <div class="flex items-center mt-2 md:mt-0">
+                                    <span class="bg-slate-100 text-slate-800 px-3 py-1 rounded-full text-sm font-medium">
+                                        前职位
+                                    </span>
+                                    <span class="mx-2 text-slate-400">•</span>
+                                    <span class="text-slate-500">2020年 - 2022年</span>
+                                </div>
+                            </div>
+                            <p class="text-slate-600 mb-4">
+                                在字节跳动担任AI产品经理，参与豆包/剪映/扣子等产品的底层模型能力数据支持工作，
+                                负责AI功能的需求分析、产品设计和项目管理，推动AI技术在产品中的落地应用。
+                            </p>
+                            <div class="flex flex-wrap gap-2 mt-4">
+                                <span class="bg-slate-100 text-slate-700 px-3 py-1 rounded-full text-sm">产品设计</span>
+                                <span class="bg-slate-100 text-slate-700 px-3 py-1 rounded-full text-sm">数据分析</span>
+                                <span class="bg-slate-100 text-slate-700 px-3 py-1 rounded-full text-sm">项目管理</span>
+                                <span class="bg-slate-100 text-slate-700 px-3 py-1 rounded-full text-sm">AI模型应用</span>
+                            </div>
+                        </div>
+                        
+                        <!-- 经验项目 3 -->
+                        <div class="timeline-item">
+                            <div class="flex flex-col md:flex-row md:items-center justify-between mb-4">
+                                <h3 class="text-xl font-bold font-poppins">Agent 101开源社区 - 主理人</h3>
+                                <div class="flex items-center mt-2 md:mt-0">
+                                    <span class="bg-primary-100 text-primary-800 px-3 py-1 rounded-full text-sm font-medium">
+                                        现在
+                                    </span>
+                                    <span class="mx-2 text-slate-400">•</span>
+                                    <span class="text-slate-500">2021年 - 至今</span>
+                                </div>
+                            </div>
+                            <p class="text-slate-600 mb-4">
+                                创立并运营Agent 101开源社区，聚集AI开发者和爱好者，提供技术分享、资源交流和项目协作平台，
+                                推动AI智能体技术的普及和发展，组织线上线下技术交流活动。
+                            </p>
+                            <div class="flex flex-wrap gap-2 mt-4">
+                                <span class="bg-slate-100 text-slate-700 px-3 py-1 rounded-full text-sm">社区运营</span>
+                                <span class="bg-slate-100 text-slate-700 px-3 py-1 rounded-full text-sm">技术分享</span>
+                                <span class="bg-slate-100 text-slate-700 px-3 py-1 rounded-full text-sm">开源项目</span>
+                                <span class="bg-slate-100 text-slate-700 px-3 py-1 rounded-full text-sm">活动组织</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
